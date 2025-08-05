@@ -12,29 +12,28 @@
         crossorigin="anonymous">
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"
-        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
-         crossorigin="anonymous"></script>
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
     <div class="container">
         <div class="round">
-            <i class="fa-solid fa-truck"></i>
+            <i class="fa-solid fa-truck logo"></i>
         </div>
-    </div> class= "wrap-input-label">
-        <label for="nome"></label>
-        <input type="text" id="nome" placeholder="Insira seu nome">
-    </div>
-     <div class="wrap-input-label">
-        <label for="senha">senha</label>
-        <input type="text" id="senha" placeholder="Insira sua senha">
-        <div onclick="showPassword()">
-            <img class="eye" src=".Images/eye.png" alt="Olhos" id="eye">
+        <div class="wrap-input-label">
+            <label for="nome">nome</label>
+            <input type="text" id="nome" placeholder="Insira seu nome">
         </div>
-    </div>
+        <div class="wrap-input-label">
+            <label for="senha">senha</label>
+            <input type="text" id="senha" placeholder="Insira sua senha">
+            <div onclick="showPassword()">
+                <img class="eye" src="./images/eye.png" alt="Olhos" id="eye">
+            </div>
+        </div>
         <p>esqueci minha senha</p>
-        <button onclick="login()">LOGIN</button>
+        <button class="btn-login" onclick="login()">LOGIN</button>
     </div>
 
     <div class="error-div" id="error-modal">
@@ -48,8 +47,8 @@
 </html>
 
 
-  
-    <script src="script.js"></script>
+
+<script src="script.js"></script>
 
 </body>
 
