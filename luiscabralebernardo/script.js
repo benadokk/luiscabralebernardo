@@ -1,0 +1,18 @@
+function login(){
+    var nome = $('#nome').val()
+    console.log(nome)
+}
+
+function showPassword(){
+    var input_senha = decumento.querySelector('#senha')
+    var img_eye = documento.querySelector('#eye')
+
+    if(input_senha.getAttribute('type') === 'password'){
+        input_senha.setAttribute('type', 'text')
+        img_eye.setAttribute('src', './Images/eye-not.png')
+
+    }else{
+        input_senha.setAttribute('type', 'password')
+        img_eye.setAttribute('src', './Images?eye.png')
+    }
+}
