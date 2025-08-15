@@ -1,89 +1,84 @@
-$(document).ready(function(){
-    // recupera o carrinho do localstorage
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
+let produtos
 
-    // atribuir a uma variavel a lista do html
-    const listaElement = $('#lista')
+window.onload = function () {
+    var storedUser = localStorage.getItem("usuario");
+    var user = JSON.parse(storedUser);
 
-    // atribuir a uma variavel o total referente no html
-    const totalElement = $('#total')
+    var dataEntrada = new Date(user.dataEntrada);
+    var dataFormatada = dataEntrada.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
 
-    // função para exibir este carrinho
+    document.getElementById("perfil").innerText = dataFormatada;
+    document.getElementById("user").innerText = user.name;
+    document.getElementById("idPerfil").innerText = user.id;
+};
 
-    function exibirCarrinho(){
-        // limpa o conteudo atual da lista no cache do sistema
-        listaElement.empty()
+document.addEventListener("DOMContentLoaded", function () {
+    //busca dos produtos e armazenamento dos dados na variavel global
+    fetch('../Dados/mock.json')
+        .then((response) => response.json())
+        .then((data) => {
+            produtos = data
+            // console.log(data)
 
-        // variavel para calcular o total
-        let totalPreco = 0
+            const produtosContainer = document.getElementById('produtos-container')
+            produtos.forEach((produto, index) => {
 
-        $.each(carrinho, function(index, item){
-            // criar um elemento de lista para cada item no for
-            const listItem = $("<li>").text(`${item.descricao} - Preço: $${item.preco.toFixed(2)}`)
+                const card = document.createElement('div')
+                card.className = 'card'
+                card.style.width = '18rem'
+                card.style.marginRight = '12px'
+                card.style.marginBottom = '10px'
 
-            //cria um botao de remover o item com X
-            const removeButton = $('<button>').text('❌').css('margin-left', '10px').click(function(){
-                removerItemDoCarrinho(index)
-            })
+                const imagem = document.createElement('img')
+                imagem.src = produto.imagem
+                imagem.className = 'card-img-top'
+                imagem.style.height = '10rem'
+                imagem.style.width = 'fit-content'
+                imagem.style.alignSelf = 'center'
 
-            listItem.append(removeButton)
-            listaElement.append(listItem)
+                const cardBody = document.createElement('div')
+                cardBody.className = 'card-body'
 
-            // adiciona o preco do item ao total
-            totalPreco += item.preco
+                const cardTitle = document.createElement('h5')
+                cardTitle.className = 'card-title'
+                cardTitle.textContent = produto.descricao
+
+                const cardText = document.createElement('p')
+                cardText.className = 'card-text'
+                cardText.textContent = 'Preço: $' + produto.preco.toFixed(2)
+
+                const btnAdicionarAoCarrinho = document.createElement('a')
+                btnAdicionarAoCarrinho.href = '#'
+                btnAdicionarAoCarrinho.className = 'btn btn-outline-dark btn-sm btn-adicionar-ao-carrinho'
+                btnAdicionarAoCarrinho.textContent = 'Adicionar ao carrinho'
+                btnAdicionarAoCarrinho.setAttribute('data-indice', index)
+
+                //criando os pais e filhos segundo o bootstrap
+                cardBody.appendChild(cardTitle)
+                cardBody.appendChild(cardText)
+                cardBody.appendChild(btnAdicionarAoCarrinho)
+
+                card.appendChild(imagem)
+                card.appendChild(cardBody)
+
+                produtosContainer.appendChild(card)
+            });
+        }).catch((error) => console.error('Erro ao carregar dados', error))
+
+        $('#produtos-container').on('click', '.btn-adicionar-ao-carrinho', function() {
+            const indexDoProduto = $(this).data('indice')
+            const produtoSelecionado = produtos[indexDoProduto]
+
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || []
+            carrinho.push(produtoSelecionado)
+            localStorage.setItem('carrinho', JSON.stringify(carrinho))
+            alert("Produto adicionado com sucesso")
         })
 
-        // exibe o total em preco no elemento totalElement
-        totalElement.text(`Total: $${totalPreco.toFixed(2)}`)
-    }
-
-        function removerItemDoCarrinho(index){
-            carrinho.splice(index, 1)
-            localStorage.setItem('carrinho', JSON.stringify(carrinho))
-            exibirCarrinho()
-        }
-
-        exibirCarrinho()
-})
-
-function gerarPedido(){
-    const listaElement = document.getElementById('lista')
-    const totalElement = document.getElementById('total')
-
-    const listaClone = listaElement.cloneNode(true)
-
-    $(listaClone).find('button').remove()
-
-    const listaHtml = listaClone.innerHTML
-    const totalHtml = totalElement.innerHTML
-
-    const conteudoHTML = `
-        <html>
-            <head>
-                <meta charset='UTF-8'/>
-            </head>
-            <body>
-                <h1>Pedido Confirmado</h1>
-                <h3>Agradecemos sua compra conosco e sua preferência</h3>
-                <br>
-                ${listaHtml}
-                <br>
-                <br>
-                ${totalHtml}
-            </body>
-        </html>
-    `;
-
-    const blob = new Blob([conteudoHTML], {type: 'application/msword'})
-    const link = document.createElement('a')
-
-    link.href = URL.createObjectURL(blob)
-    link.download = 'pedido.doc'
-    link.click()
-
-    document.getElementById('pedido').style.display = 'block'
-}
-
-function successClose(){
-    document.getElementById('pedido').style.display = 'none'
-}
+});
